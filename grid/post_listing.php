@@ -17,18 +17,52 @@ function postListapi($param){
         text-decoration:none;
     }
 
+    @media (min-width: 34em) {
+        .card-columns {
+            -webkit-column-count:1;
+            -moz-column-count:1;
+            column-count:1;
+        }
+    }
+
+    @media (min-width: 48em) {
+        .card-columns {
+            -webkit-column-count:2;
+            -moz-column-count:2;
+            column-count:2;
+        }
+    }
+
+    @media (min-width: 62em) {
+        .card-columns {
+            -webkit-column-count:3;
+            -moz-column-count:3;
+            column-count:3;
+        }
+    }
+
+    @media (min-width: 75em) {
+        .card-columns {
+            -webkit-column-count:".$param['per_ligne'].";
+            -moz-column-count:".$param['per_ligne'].";
+            column-count:".$param['per_ligne'].";
+        }
+    }
+
     </style>
     ";
 
     echo "
     <div id='postList' 
-    apiUrl='".$param['site_url']."' 
+    apiUrl_fr='".$param['site_url_fr']."' 
+    apiUrl_en='".$param['site_url_en']."' 
     totalPost='".$param['total_post']."'
     perLigne='".$param['per_ligne']."'
+    language='".get_bloginfo("language")."'
     > 
 
-    <div class='column'>
-     <div class='row' id='row-grid'>
+    <div>
+     <div class='card-columns' id='row-grid'>
        <div style='text-align:center'>Chargement...</div>
      </div>
     </div>
@@ -38,29 +72,30 @@ function postListapi($param){
 ;?>
 <script type="text/javascript">
 $(function(){
-    var api_url=$("#postList").attr("apiUrl");
+    var api_url_en=$("#postList").attr("apiUrl_en");
+    var api_url_fr=$("#postList").attr("apiUrl_fr");
     var total_post=$("#postList").attr("totalPost");
-    var per_ligne=$("#postList").attr("perLigne");
-    var rowStyle="";
+    var language=$("#postList").attr("language");
+    var calendar_en=["Jan", "Feb", "Mar","Apr", "May", "June","July","Aug", "Sep","Oct", "Nov", "Dec"];
+    var calendar_fr=["Jan", "Fev", "Mar","Avr", "Mai", "Juin","Jui","Août", "Sep","Oct", "Nov", "Dec"];
     var posts=[];
 
-    switch (per_ligne) {
-        case '1':
-        rowStyle="col-lg-12 col-md-12 col-sm-12";
-        break;
-        case '2':
-        rowStyle="col-lg-6 col-md-6 col-sm-12";
-        break;
-        case '3':
-        rowStyle="col-lg-4 col-md-6 col-sm-12";
-        break;
-        case '4':
-        rowStyle="col-lg-3 col-md-6 col-sm-12";
-        break;
-        default:
-        rowStyle="col-lg-4 col-md-6 col-sm-12";
-        break;
+    if(language=="en-US"){
+        var api_url=api_url_en;
+        var calendar=calendar_en;
+        var dateText="Published date";
+        var authorText="Author";
+        var buttonText="Read more";
     }
+    else
+    {
+        var api_url=api_url_fr;
+        var calendar=calendar_fr;
+        var dateText="Date de publication";
+        var authorText="Auteur";
+        var buttonText="Lire la suite";
+    }
+    console.debug(api_url,language);
 
     // get posts from url
     function getPost(url){
@@ -79,40 +114,50 @@ $(function(){
         });
     }
 
+    function convertDate(mydate){
+        var _date = new Date(mydate);
+        var day = _date.getDate();
+        var month = _date.getMonth();
+        var year = _date.getFullYear();
+        return `${day} ${calendar[month-1]} ${year}`;
+    }
+
     // List Post
     function listPost(data){
         var postGrid=$("#row-grid");
         var htmlContent="";
         
         data.map((item, key)=>{
-        
-            // open Tag
-            htmlContent+=`<div class='${rowStyle} px-2'>`;
-            htmlContent+="<div class='post-bg-color'>";
-            // img
-            htmlContent+=`<div class="my-1">
-            <img id="post-img" class="post-img-height post-img-width" src="${item["_embedded"]["wp:featuredmedia"][0]["media_details"]["sizes"]["large"]["source_url"]}"/>
-            </div>`;
-            htmlContent+="<div class='px-4 py-4'>";
-            // title 
-            htmlContent+=`<div class="my-4"> <h3 class="post-title-font post-title-color"> ${item.title.rendered} </h3></div>`;
-            //date de publication
-            htmlContent+=`<div class="my-2 post-meta-font post-meta-color"> Date de publication: <span> ${item["date"]} </span> </div>`;
-            //cours auteur
-            htmlContent+=`<div class="my-2 post-meta-font post-meta-color"> Auteur: <span> ${item["acf"]['auteur']} </span> </div>`;
+            
+            //date 
+            var _date=convertDate(item["date"]);
+            var _img=item["_embedded"]["wp:featuredmedia"][0]["media_details"]["sizes"]["large"]["source_url"];
+            htmlContent+=`
+            <div class="card post-bg-color my-2" style="border:none;border-radius: 0rem !important;">
+                <a href="${item.link}"><img id="post-img" class="post-img-height post-img-width" src="${_img}" alt="Card image cap"></a>
 
-            //description
-            htmlContent+=`<div class="my-1"><p class="post-description-font post-description-color">${item["acf"]['chapeau']}</p> </div>`;
+                <div class="card-body">
+                <h5 class="card-title post-title-font post-title-color">
+                ${item.title.rendered}
+                </h5>
+                
+                <p class="my-2 post-meta-font post-meta-color"> 
+                ${dateText}: <span> ${_date} </span> <br/>
+                ${authorText}: <span> ${item["acf"]['auteur']} </span> 
+                </p>
 
-            //lien
-            htmlContent+=`<div class="my-1"> <a href="${item.link}" target="_blank" class="post_link post-button-font post-button-bg-color post-button-color"> 
-            Lire la suite</a> </div>`;
+                <div class="my-1">
+                <p class="post-description-font post-description-color">
+                ${item["acf"]['chapeau']}</p> 
+                </div>
 
-            htmlContent+="</div>";
+                <div class="my-1"> <a href="${item.link}" target="_blank" class="post_link post-button-font post-button-bg-color post-button-color">  ${buttonText} </a> </div>
 
-            htmlContent+="</div>";
-            // end tag
-            htmlContent+="</div>";
+                </div>
+            </div>
+            `;
+
+
         })
 
         postGrid.html(htmlContent);

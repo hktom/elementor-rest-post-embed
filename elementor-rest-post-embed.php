@@ -3,7 +3,7 @@
  * Plugin Name: Elementor Rest Post Embed
  * Description: Elementor widget that allow to embed post from another website by using REST API
  * Plugin URI:  https://github.com/hktom/elementor-rest-post-embed
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      Tom Hikari
  * Author URI:  https://github.com/hktom/
  * Text Domain: elementor-rest-post-embed

@@ -31,9 +31,19 @@ class Elementor_Rest_Post_Embed extends Widget_Base {
 		);
 
 		$this->add_control(
-			'site_url',
+			'site_url_fr',
 			[
-				'label' => __( 'API Url', 'self::$slug' ),
+				'label' => __( 'API Url FR', 'self::$slug' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'input_type' => 'text',
+				'placeholder' => __( "website site api url", 'self::$slug' ),
+			]
+		);
+		
+		$this->add_control(
+			'site_url_en',
+			[
+				'label' => __( 'API Url EN', 'self::$slug' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
 				'input_type' => 'text',
 				'placeholder' => __( "website site api url", 'self::$slug' ),
@@ -330,7 +340,7 @@ class Elementor_Rest_Post_Embed extends Widget_Base {
 	}
 
 	protected function render() {
-        $settings = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
         postListapi($settings);
 	}
 }
