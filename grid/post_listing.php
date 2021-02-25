@@ -17,6 +17,14 @@ function postListapi($param){
         text-decoration:none;
     }
 
+    @media (max-width: 34em) {
+        .card-columns {
+            -webkit-column-count:1;
+            -moz-column-count:1;
+            column-count:1;
+        }
+    }
+
     @media (min-width: 34em) {
         .card-columns {
             -webkit-column-count:1;
@@ -62,15 +70,15 @@ function postListapi($param){
     > 
 
     <div>
-     <div class='card-columns' id='row-grid'>
-       <div style='text-align:center'>Chargement...</div>
+     <div class='card-columns' id='row-grid' style='
+     flex-wrap: inherit !important;'>
+       <div style='text-align:center'></div>
      </div>
     </div>
     
     </div>
 ";
 ;?>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="<?php echo plugin_dir_url( __DIR__ ).'/grid/post_listing.js';?>"></script>
 <?php
 }

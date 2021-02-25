@@ -124,8 +124,9 @@ $(function() {
                 </p>
 
                 <div class="my-1">
-                <p class="post-description-font post-description-color">
-                ${item["acf"]['chapeau']}</p> 
+                <div class="post-description-font post-description-color">
+                ${item["acf"]['chapeau']}
+                </div> 
                 </div>
 
                 <div class="my-1"> <a href="${item.link}" target="_blank" class="post_link post-button-font post-button-bg-color post-button-color">  ${buttonText} </a> </div>
