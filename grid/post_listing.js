@@ -21,18 +21,18 @@ $(function() {
         var authorText = "Auteur";
         var buttonText = "Lire la suite";
     }
-    console.debug(api_url, language);
+    // console.debug(api_url, language);
 
     // get posts from url
     function getPost(url, post_type) {
-        $.get(`${url}${post_type}?_embed=wp:featuredmedia,wp:term&per_page=${total_post}`, function(res) {
+        $.get(`${url}${post_type}?per_page=${total_post}`, function(res) {
             posts = res;
             if (post_type == "use_case") {
                 listUseCase(posts);
             } else {
                 listPost(posts);
             }
-            console.log('success', res);
+            // console.log('success', res);
         }).fail(function(err) {
             console.log('$Error', err);
         });
@@ -52,18 +52,18 @@ $(function() {
         data.map((item, key) => {
             //date 
             var _date = convertDate(item["date"]);
-            var _img = '';
-            var _linkImg = item["_embedded"]["wp:featuredmedia"][0]["media_details"];
+            var _img = item['featured_media_src_url'];
+            // var _linkImg = item["_embedded"]["wp:featuredmedia"][0]["media_details"];
 
-            try {
-                _img = _linkImg["sizes"]["large"]["source_url"]
-            } catch (error) {
-                _img = _linkImg["sizes"]["full"]["source_url"];
-            }
+            // try {
+            //     _img = _linkImg["sizes"]["large"]["source_url"]
+            // } catch (error) {
+            //     _img = _linkImg["sizes"]["full"]["source_url"];
+            // }
 
 
             htmlContent += `
-            <div class="card post-bg-color my-2" style="border:none;border-radius: 0rem !important;">
+            <div id="elementor-post-embed-post-${key}" class="card post-bg-color my-2" style="border:none;border-radius: 0rem !important;">
                 <a href="${item.link}"><img id="post-img" class="post-img-height post-img-width" src="${_img}" alt="Card image cap"></a>
 
                 <div class="card-body">
@@ -92,7 +92,7 @@ $(function() {
 
 
         postGrid.html(htmlContent);
-        console.log("List Post");
+        // console.log("List Post");
     }
 
     function listUseCase(data) {
@@ -100,18 +100,18 @@ $(function() {
         data.map((item, key) => {
             //date 
             var _date = convertDate(item["modified"]);
-            var _img = '';
-            var _linkImg = item["_embedded"]["wp:featuredmedia"][0]["media_details"];
+            var _img = item['featured_media_src_url'];
+            // var _linkImg = item["_embedded"]["wp:featuredmedia"][0]["media_details"];
 
-            try {
-                _img = _linkImg["sizes"]["large"]["source_url"];
-            } catch (error) {
-                _img = _linkImg["sizes"]["full"]["source_url"];
-            }
+            // try {
+            //     _img = _linkImg["sizes"]["large"]["source_url"];
+            // } catch (error) {
+            //     _img = _linkImg["sizes"]["full"]["source_url"];
+            // }
 
 
             htmlContent += `
-            <div class="card post-bg-color my-2" style="border:none;border-radius: 0rem !important;">
+            <div id="elementor-post-embed-usecase-${key}" class="card post-bg-color my-2" style="border:none;border-radius: 0rem !important;">
                 <a href="${item.link}"><img id="post-img" class="post-img-height post-img-width" src="${_img}" alt="Card image cap"></a>
 
                 <div class="card-body">
@@ -124,8 +124,9 @@ $(function() {
                 </p>
 
                 <div class="my-1">
-                <p class="post-description-font post-description-color">
-                ${item["acf"]['chapeau']}</p> 
+                <div class="post-description-font post-description-color">
+                ${item["acf"]['chapeau']}
+                </div> 
                 </div>
 
                 <div class="my-1"> <a href="${item.link}" target="_blank" class="post_link post-button-font post-button-bg-color post-button-color">  ${buttonText} </a> </div>
@@ -139,7 +140,7 @@ $(function() {
 
 
         postGrid.html(htmlContent);
-        console.log("List Post");
+        // console.log("List Post");
     }
 
     getPost(api_url, 'posts');
